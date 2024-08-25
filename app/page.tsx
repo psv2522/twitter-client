@@ -5,6 +5,9 @@ import { BsBell, BsBookmark, BsEnvelope, BsTwitter } from "react-icons/bs";
 import { SlOptions } from "react-icons/sl";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { useCallback } from "react";
+import { toast } from "react-hot-toast";
+import { verifyUserGoogleTokenQuery } from "@/graphql/query/user";
+import { graphqlClient } from "@/clients/api";
 
 interface TwitterSidebarButton {
   title: string;
@@ -47,10 +50,27 @@ const sidebarMenuItems: TwitterSidebarButton[] = [
 ];
 
 export default function Home() {
-  const handleLoginwithGoogle = useCallback((cred: CredentialResponse) => {
-    
-  },
-  []);
+  const handleLoginwithGoogle = useCallback(
+    async (cred: CredentialResponse) => {
+      const googleToken = cred.credential;
+      if (!googleToken) return toast.error("Google token not found");
+      const { verifyGoogleToken } = await graphqlClient.request(
+        verifyUserGoogleTokenQuery,
+        {
+          token: googleToken,
+        }
+      );
+
+      toast.success("Google token verified");
+      console.log(verifyGoogleToken);
+
+      if (verifyGoogleToken) {
+        window.localStorage.setItem("__twitter_token", verifyGoogleToken);
+      }
+
+    },
+    []
+  );
   return (
     <div>
       <div className="grid grid-cols-12 h-screen w-screen px-56">
@@ -89,7 +109,7 @@ export default function Home() {
         <div className="col-span-3 p-5">
           <div className="p-5 bg-slate-700 rounded-lg">
             <h1 className="py-2 text-2xl">New to Twitter?</h1>
-            <GoogleLogin onSuccess={(cred) => console.log(cred)} />;
+            <GoogleLogin onSuccess={handleLoginwithGoogle} />;
           </div>
         </div>
       </div>
