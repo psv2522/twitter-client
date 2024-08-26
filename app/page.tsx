@@ -10,6 +10,7 @@ import { verifyUserGoogleTokenQuery } from "@/graphql/query/user";
 import { graphqlClient } from "@/clients/api";
 import { useCurrentUser } from "@/hooks/user";
 import { useQueryClient } from "@tanstack/react-query";
+import { TweetModal } from "@/components/TweetModal";
 
 interface TwitterSidebarButton {
   title: string;
@@ -120,6 +121,7 @@ export default function Home() {
           )}
         </div>
         <div className="col-span-5 border-l-[1px] border-r-[1px] h-screen overflow-scroll scroll border-gray-600 no-scrollbar">
+          <TweetModal />
           <FeedCard />
           <FeedCard />
           <FeedCard />

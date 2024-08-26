@@ -22,3 +22,7 @@ body {
         /* Firefox */
     }
 }
+
+*:focus {
+    outline: none;
+}
