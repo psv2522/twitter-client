@@ -8,6 +8,8 @@ import { useCallback } from "react";
 import { toast } from "react-hot-toast";
 import { verifyUserGoogleTokenQuery } from "@/graphql/query/user";
 import { graphqlClient } from "@/clients/api";
+import { useCurrentUser } from "@/hooks/user";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface TwitterSidebarButton {
   title: string;
@@ -50,6 +52,7 @@ const sidebarMenuItems: TwitterSidebarButton[] = [
 ];
 
 export default function Home() {
+  const queryClient = useQueryClient();
   const handleLoginwithGoogle = useCallback(
     async (cred: CredentialResponse) => {
       const googleToken = cred.credential;
@@ -67,14 +70,17 @@ export default function Home() {
       if (verifyGoogleToken) {
         window.localStorage.setItem("__twitter_token", verifyGoogleToken);
       }
-
+      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
-    []
+    [queryClient]
   );
+
+  const { user } = useCurrentUser();
+
   return (
     <div>
       <div className="grid grid-cols-12 h-screen w-screen px-56">
-        <div className="col-span-3 pt-1 ml-12">
+        <div className="col-span-3 pt-1 ml-12 relative">
           <div className="text-2xl h-fit hover:bg-gray-800 rounded-full p-4 cursor-pointer transition-all w-fit">
             <BsTwitter />
           </div>
@@ -96,8 +102,24 @@ export default function Home() {
               </button>
             </div>
           </div>
+          {user && (
+            <div className=" absolute bottom-5 flex gap-2 items-center bg-slate-700 rounded-full px-3 py-2 cursor-pointer">
+              {user && user.profileImageURL && (
+                <img
+                  src={user.profileImageURL}
+                  alt="User profile"
+                  height={50}
+                  width={50}
+                  className="rounded-full"
+                />
+              )}
+              <div>
+                <h3>{user.firstName}</h3>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="col-span-5 border-l-[1px] border-r-[1px] h-screen overflow-scroll scroll border-gray-600 no-scrollbar ">
+        <div className="col-span-5 border-l-[1px] border-r-[1px] h-screen overflow-scroll scroll border-gray-600 no-scrollbar">
           <FeedCard />
           <FeedCard />
           <FeedCard />
@@ -107,10 +129,12 @@ export default function Home() {
           <FeedCard />
         </div>
         <div className="col-span-3 p-5">
-          <div className="p-5 bg-slate-700 rounded-lg">
-            <h1 className="py-2 text-2xl">New to Twitter?</h1>
-            <GoogleLogin onSuccess={handleLoginwithGoogle} />;
-          </div>
+          {!user && (
+            <div className="p-5 bg-slate-700 rounded-lg">
+              <h1 className="py-2 text-2xl">New to Twitter?</h1>
+              <GoogleLogin onSuccess={handleLoginwithGoogle} />
+            </div>
+          )}
         </div>
       </div>
     </div>
