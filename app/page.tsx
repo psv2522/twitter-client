@@ -4,13 +4,15 @@ import { BiHomeCircle, BiHash, BiUser, BiMoney } from "react-icons/bi";
 import { BsBell, BsBookmark, BsEnvelope, BsTwitter } from "react-icons/bs";
 import { SlOptions } from "react-icons/sl";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import { verifyUserGoogleTokenQuery } from "@/graphql/query/user";
 import { graphqlClient } from "@/clients/api";
 import { useCurrentUser } from "@/hooks/user";
 import { useQueryClient } from "@tanstack/react-query";
 import { TweetModal } from "@/components/TweetModal";
+import { useGetAllTweets } from "@/hooks/tweet";
+import { Tweet } from "@/gql/graphql";
 
 interface TwitterSidebarButton {
   title: string;
@@ -78,6 +80,8 @@ export default function Home() {
 
   const { user } = useCurrentUser();
 
+  const { tweets = [] } = useGetAllTweets();
+
   return (
     <div>
       <div className="grid grid-cols-12 h-screen w-screen px-56">
@@ -122,13 +126,9 @@ export default function Home() {
         </div>
         <div className="col-span-5 border-l-[1px] border-r-[1px] h-screen overflow-scroll scroll border-gray-600 no-scrollbar">
           <TweetModal />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
+          {tweets?.map((tweet) =>
+            tweet ? <FeedCard key={tweet?.id} data={tweet as Tweet} /> : null
+          )}
         </div>
         <div className="col-span-3 p-5">
           {!user && (
