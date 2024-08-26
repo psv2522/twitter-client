@@ -18,8 +18,8 @@ export function FeedCard({ data }: FeedCardProps) {
               src={data.author?.profileImageURL}
               alt="userimage"
               className="rounded-full"
-              height={50}
-              width={50}
+              height={30}
+              width={30}
             />
           )}
         </div>

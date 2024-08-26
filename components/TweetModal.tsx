@@ -22,10 +22,11 @@ export const TweetModal = () => {
     mutate({
       content,
     });
+    setContent("");
   }, [content, mutate]);
 
   return (
-    <section className="grid grid-cols-12 grid-rows-4  h-48 border-b-[0.5px] border-b-gray-800 p-4 gap-2">
+    <section className="grid grid-cols-12 grid-rows-4  h-40 border-b-[0.5px] border-b-gray-800 p-4 gap-2">
       {user?.profileImageURL && (
         <Image
           src={user?.profileImageURL}
@@ -41,7 +42,7 @@ export const TweetModal = () => {
           onChange={(e) => setContent(e.target.value)}
           placeholder="What's happening?"
           className="bg-black px-3 text-xl"
-          rows={4}
+          rows={3}
         />
       </div>
       <div className="col-span-11 flex justify-between">
