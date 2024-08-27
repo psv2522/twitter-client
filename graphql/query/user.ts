@@ -15,6 +15,15 @@ export const getCurrentUserQuery = graphql(`
             lastName
             email
             profileImageURL
+			tweets {
+				id
+				content
+				author{
+					firstName
+					lastName
+					profileImageURL
+				}
+			}
         }
     }
 `);
