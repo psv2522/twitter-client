@@ -51,7 +51,7 @@ export default function ProfilePage() {
                 alt="user-image"
                 width={100}
                 height={100}
-                className="rounded-full invert"
+                className="rounded-full"
               />
             )}
             <h1 className="text-lg font-bold mt-5">
