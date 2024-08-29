@@ -9,3 +9,4 @@ export const useCurrentUser = () => {
     })
     return { ...query, user: query.data?.getCurrentUser };
 };
+

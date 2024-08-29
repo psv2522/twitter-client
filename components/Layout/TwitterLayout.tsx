@@ -99,7 +99,9 @@ export default function TwitterLayout({ children }: TwitterLayoutProps) {
         <div className="col-span-2 sm:col-span-3 pt-1 flex relative sm:justify-end pr-4">
           <div>
             <div className="text-2xl h-fit hover:bg-gray-800 rounded-full p-4 cursor-pointer transition-all w-fit">
-              <BsTwitter />
+              <Link href={"/"}>
+                <BsTwitter />
+              </Link>
             </div>
             <div className="mt-1 text-xl font-semibold pr-4">
               <ul>
@@ -145,7 +147,7 @@ export default function TwitterLayout({ children }: TwitterLayoutProps) {
         <div className="col-span-10 sm:col-span-5 border-l-[1px] border-r-[1px] h-screen overflow-scroll scroll border-gray-600 no-scrollbar">
           {children}
         </div>
-        <div className="hidden sm:col-span-3 p-5">
+        <div className="sm:col-span-3 p-5">
           {!user && (
             <div className="p-5 bg-slate-700 rounded-lg">
               <h1 className="py-2 text-2xl">New to Twitter?</h1>
