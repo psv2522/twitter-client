@@ -10,7 +10,6 @@ interface FeedCardProps {
 }
 
 export function FeedCard({ data }: FeedCardProps) {
-  console.log(data);
   return (
     <div className="border border-l-0 border-r-0 border-b-0 border-gray-600 p-4 hover:bg-slate-900 transition-all cursor-pointer">
       <div className="grid grid-cols-12 gap-3">
@@ -32,6 +31,15 @@ export function FeedCard({ data }: FeedCardProps) {
             </Link>
           </h5>
           <p>{data.content}</p>
+          {data.imageURL && (
+            <Image
+              src={data.imageURL}
+              alt="image"
+              width={400}
+              height={400}
+              className="mt-2"
+            />
+          )}
           <div className="flex justify-between mt-5 text-xl items-center p-2 w-[90%]">
             <div>
               <BiMessageRounded />
