@@ -9,13 +9,16 @@ import { getSignedUrlForTweetQuery } from "@/graphql/query/tweet";
 import { graphqlClient } from "@/clients/api";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export const TweetModal = () => {
   const { user } = useCurrentUser();
   const [content, setContent] = useState("");
   const [imageURL, setImageURL] = useState<string | null>(null);
   const { mutate } = useCreateTweet();
-
+  
+  const router = useRouter();
+  
   const handleInputChangeFile = useCallback((input: HTMLInputElement) => {
     return async (event: Event) => {
       event.preventDefault();
@@ -70,6 +73,7 @@ export const TweetModal = () => {
     });
     setContent("");
     setImageURL(null);
+    router.refresh();
   }, [content, mutate, imageURL]);
 
   if (!user) return null;

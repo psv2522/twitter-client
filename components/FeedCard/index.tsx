@@ -35,8 +35,8 @@ export function FeedCard({ data }: FeedCardProps) {
             <Image
               src={data.imageURL}
               alt="image"
-              width={400}
-              height={400}
+              width={300}
+              height={300}
               className="mt-2"
             />
           )}

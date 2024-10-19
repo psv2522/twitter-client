@@ -149,7 +149,7 @@ export default function TwitterLayout({ children }: TwitterLayoutProps) {
         </div>
         <div className="sm:col-span-3 p-5">
           {!user && (
-            <div className="p-5 bg-slate-700 rounded-lg">
+            <div className="p-5 bg-slate-700 rounded-lg flex flex-col items-center">
               <h1 className="py-2 text-2xl">New to Twitter?</h1>
               <GoogleLogin onSuccess={handleLoginwithGoogle} />
             </div>
