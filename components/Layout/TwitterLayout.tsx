@@ -9,6 +9,7 @@ import { verifyUserGoogleTokenQuery } from "@/graphql/query/user";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import Image from "next/image";
 
 interface TwitterLayoutProps {
   children: React.ReactNode;
@@ -184,10 +185,38 @@ export default function TwitterLayout({ children }: TwitterLayoutProps) {
         </div>
 
         <div className="sm:col-span-3 p-5">
-          {!user && (
+          {!user ? (
             <div className="p-5 bg-slate-700 rounded-lg flex flex-col items-center">
               <h1 className="py-2 text-2xl">New to Twitter?</h1>
               <GoogleLogin onSuccess={handleLoginwithGoogle} />
+            </div>
+          ) : (
+            <div className="px-4 py-3 rounded-lg bg-slate-800">
+              <h1 className="py-2 text-xl mb-5">Users you may know</h1>
+              {user?.recommendedUsers?.map((el) => (
+                <div key={el.id} className="flex items-center gap-3 mt-2">
+                  {el.profileImageURL && (
+                    <Image
+                      src={el?.profileImageURL}
+                      alt="user-image"
+                      className="rounded-full"
+                      width={60}
+                      height={60}
+                    ></Image>
+                  )}
+                  <div>
+                    <div className="text-base">
+                      {el.firstName} {el.lastName}
+                    </div>
+                    <Link
+                      href={`/${el?.id}`}
+                      className="bg-white text-black text-sm px-5 py-1 w-full rounded-lg"
+                    >
+                      View
+                    </Link>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
