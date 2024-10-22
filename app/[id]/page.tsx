@@ -93,7 +93,7 @@ export default function ProfilePage() {
                 <span>{user?.followers?.length} followers</span>
                 <span>{user?.following?.length} following</span>
               </div>
-              {currentUser?.id !== user?.id && (
+              {currentUser?.id !== user?.id && currentUser && (
                 <>
                   {amIFollowing ? (
                     <button

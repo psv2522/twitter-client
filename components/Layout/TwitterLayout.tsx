@@ -1,4 +1,4 @@
-"use client";
+import { useState, useCallback, useMemo } from "react";
 import { useCurrentUser } from "@/hooks/user";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { BiCheckCircle, BiHash, BiHomeCircle, BiUser } from "react-icons/bi";
@@ -6,7 +6,6 @@ import { BsBell, BsBookmark, BsEnvelope, BsTwitter } from "react-icons/bs";
 import { SlOptions } from "react-icons/sl";
 import { graphqlClient } from "@/clients/api";
 import { verifyUserGoogleTokenQuery } from "@/graphql/query/user";
-import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
@@ -24,6 +23,7 @@ interface TwitterSidebarButton {
 export default function TwitterLayout({ children }: TwitterLayoutProps) {
   const queryClient = useQueryClient();
   const { user } = useCurrentUser();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const sidebarMenuItems: TwitterSidebarButton[] = useMemo(
     () => [
@@ -93,10 +93,17 @@ export default function TwitterLayout({ children }: TwitterLayoutProps) {
     [queryClient]
   );
 
+  const handleLogout = () => {
+    window.localStorage.removeItem("__twitter_token");
+    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    setIsDropdownOpen(false);
+    toast.success("Logged out successfully");
+  };
+
   return (
     <div>
       <div className="grid grid-cols-12 h-screen w-screen lg:px-56">
-        <div className="col-span-2 sm:col-span-3 pt-1 flex relative sm:justify-end pr-4">
+        <div className="col-span-2 sm:col-span-3 pt-1 relative pr-4">
           <div>
             <div className="text-2xl h-fit hover:bg-gray-800 rounded-full p-4 cursor-pointer transition-all w-fit">
               <Link href={"/"}>
@@ -127,26 +134,55 @@ export default function TwitterLayout({ children }: TwitterLayoutProps) {
               </div>
             </div>
           </div>
+
           {user && (
-            <div className=" absolute bottom-5 flex gap-2 items-center bg-slate-700 rounded-full px-3 py-2 cursor-pointer">
-              {user && user.profileImageURL && (
-                <img
-                  src={user.profileImageURL}
-                  alt="User profile"
-                  height={50}
-                  width={50}
-                  className="rounded-full"
-                />
-              )}
-              <div className="hidden lg:block">
-                <h3>{user.firstName}</h3>
+            <div className="absolute bottom-5">
+              <div
+                className="bg-slate-700 rounded-full px-3 py-2 cursor-pointer w-full"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                <div className="flex items-center">
+                  {user.profileImageURL ? (
+                    <img
+                      src={user.profileImageURL}
+                      alt="User profile"
+                      height={50}
+                      width={50}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 bg-green-700 rounded-full flex items-center justify-center">
+                      <span className="text-white font-semibold">
+                        {user.firstName.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                  <span className="hidden lg:inline ml-2 text-white">
+                    {user.firstName}
+                  </span>
+                </div>
               </div>
+
+              {isDropdownOpen && (
+                <div className="absolute bottom-16 left-0 bg-slate-700 p-3 rounded-lg w-48 shadow-lg">
+                  <ul>
+                    <li
+                      className="cursor-pointer hover:bg-gray-600 p-2 rounded-lg"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           )}
         </div>
+
         <div className="col-span-10 sm:col-span-5 border-l-[1px] border-r-[1px] h-screen overflow-scroll scroll border-gray-600 no-scrollbar">
           {children}
         </div>
+
         <div className="sm:col-span-3 p-5">
           {!user && (
             <div className="p-5 bg-slate-700 rounded-lg flex flex-col items-center">
